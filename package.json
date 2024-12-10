@@ -1,0 +1,27 @@
+{
+  "name": "new-project-tests",
+  "version": "1.0.0",
+  "description": "Playwright tests for the new application.",
+  "main": "playwright.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlecCham/new-project-tests.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlecCham/new-project-tests/issues"
+  },
+  "homepage": "https://github.com/AlecCham/new-project-tests#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "playwright": "^1.49.0"
+  }
+}
