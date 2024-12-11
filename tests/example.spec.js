@@ -1,5 +1,14 @@
 const { test, expect } = require('@playwright/test');
 
+// Configuration for environment and credentials
+const config = {
+  baseUrl: 'https://animated-gingersnap-8cf7f2.netlify.app/',
+  credentials: {
+    username: 'admin',
+    password: 'password123',
+  },
+};
+
 // Test cases data
 const testCases = [
   {
@@ -66,13 +75,13 @@ test.describe('Demo App Data-Driven Tests', () => {
       // Login Step
       await test.step('Login to Demo App', async () => {
         console.log('Starting login process...');
-        await page.goto('https://animated-gingersnap-8cf7f2.netlify.app/');
-        console.log('Navigated to login page.');
+        await page.goto(config.baseUrl);
+        console.log(`Navigated to login page at ${config.baseUrl}`);
 
-        await page.locator('#username').fill('admin');
+        await page.locator('#username').fill(config.credentials.username);
         console.log('Entered username.');
 
-        await page.locator('#password').fill('password123');
+        await page.locator('#password').fill(config.credentials.password);
         console.log('Entered password.');
 
         await page.locator('[type="submit"]').click();
@@ -103,7 +112,7 @@ test.describe('Demo App Data-Driven Tests', () => {
       });
 
       // Validation Step
-      await test.step(`Validate Task in "${testCase.column}" Column`, async () => {
+      await test.step(`Validate Task and Tags in "${testCase.column}" Column`, async () => {
         console.log(`Validating task "${testCase.card_title}" in column "${testCase.column}"...`);
 
         // Locate the table containing the columns
@@ -127,6 +136,20 @@ test.describe('Demo App Data-Driven Tests', () => {
           throw new Error(`Task "${testCase.card_title}" not found in "${testCase.column}" column.`);
         }
         console.log(`Task "${testCase.card_title}" successfully validated in "${testCase.column}" column.`);
+
+        // Validate tags
+        console.log(`Validating tags for task "${testCase.card_title}"...`);
+        const tagContainerLocator = taskLocator.locator('xpath=ancestor::*[@class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"]').locator('.flex.flex-wrap.gap-2.mb-3');
+        const tagLocators = tagContainerLocator.locator('span');
+        const actualTags = await tagLocators.allTextContents();
+        console.log(`Tags found: ${actualTags.join(', ')}`);
+
+        testCase.tags.forEach((tag) => {
+          if (!actualTags.includes(tag)) {
+            throw new Error(`Tag "${tag}" not found for task "${testCase.card_title}".`);
+          }
+        });
+        console.log(`Tags for task "${testCase.card_title}" successfully validated.`);
       });
     });
   });
